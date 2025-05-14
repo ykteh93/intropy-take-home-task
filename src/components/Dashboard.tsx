@@ -12,18 +12,18 @@ const Dashboard: React.FC = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleLayoutChange = (newLayout: any) => {
-    updateLayouts(newLayout);
-  };
-
   return (
-    <div className={`transition-opacity duration-200 ${(isResizing || isDragging) ? 'opacity-90' : 'opacity-100'}`}>
+    <div
+      className={`transition-opacity duration-200 ${
+        isResizing || isDragging ? 'opacity-90' : 'opacity-100'
+      }`}
+    >
       <ReactGridLayout
         className="layout"
         layout={layouts}
         cols={12}
         rowHeight={100}
-        onLayoutChange={handleLayoutChange}
+        onLayoutChange={(updatedLayouts) => updateLayouts(updatedLayouts)}
         onResizeStart={() => setIsResizing(true)}
         onResizeStop={() => setIsResizing(false)}
         onDragStart={() => setIsDragging(true)}
@@ -38,7 +38,10 @@ const Dashboard: React.FC = () => {
         isBounded={true}
       >
         {layouts.map((layout) => (
-          <div key={layout.i} className="rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white">
+          <div
+            key={layout.i}
+            className="rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white"
+          >
             <ChartWidget id={layout.i} />
           </div>
         ))}

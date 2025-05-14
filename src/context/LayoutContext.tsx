@@ -1,23 +1,23 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-type ChartData = {
-  [key: string]: {
-    title: string;
-    chartType: string;
-    options: any;
-  };
-};
-
-interface LayoutContextType {
-  layouts: any[];
-  chartData: ChartData;
-  updateLayouts: (newLayouts: any[]) => void;
-  updateChartData: (id: string, data: any) => void;
-  addChart: () => void;
-  removeChart: (id: string) => void;
-}
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
+import { Layout } from 'react-grid-layout';
+import { ChartData, ChartDataEntry, LayoutContextType } from '../utils/types';
 
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
+
+const generateDefaultLayout = (): Layout[] => {
+  return [
+    { i: 'chart-1', x: 0, y: 0, w: 6, h: 3, minW: 3, minH: 2 },
+    { i: 'chart-2', x: 6, y: 0, w: 6, h: 3, minW: 3, minH: 2 },
+    { i: 'chart-3', x: 0, y: 3, w: 4, h: 3, minW: 3, minH: 2 },
+    { i: 'chart-4', x: 4, y: 3, w: 8, h: 3, minW: 3, minH: 2 },
+  ];
+};
 
 export const useLayout = () => {
   const context = useContext(LayoutContext);
@@ -32,7 +32,7 @@ interface LayoutProviderProps {
 }
 
 export const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
-  const [layouts, setLayouts] = useState<any[]>(() => {
+  const [layouts, setLayouts] = useState<Layout[]>(() => {
     try {
       const savedLayouts = localStorage.getItem('dashboard-layouts');
       return savedLayouts ? JSON.parse(savedLayouts) : generateDefaultLayout();
@@ -60,14 +60,14 @@ export const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
     localStorage.setItem('dashboard-chartData', JSON.stringify(chartData));
   }, [chartData]);
 
-  const updateLayouts = (newLayouts: any[]) => {
+  const updateLayouts = (newLayouts: Layout[]) => {
     setLayouts(newLayouts);
   };
 
-  const updateChartData = (id: string, data: any) => {
+  const updateChartData = (id: string, data: ChartDataEntry) => {
     setChartData((prev) => ({
       ...prev,
-      [id]: data
+      [id]: data,
     }));
   };
 
@@ -80,7 +80,7 @@ export const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
       w: 6,
       h: 3,
       minW: 3,
-      minH: 2
+      minH: 2,
     };
 
     setLayouts((prev) => [...prev, newChart]);
@@ -88,7 +88,7 @@ export const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
 
   const removeChart = (id: string) => {
     setLayouts((prev) => prev.filter((layout) => layout.i !== id));
-    
+
     setChartData((prev) => {
       const newData = { ...prev };
       delete newData[id];
@@ -104,19 +104,10 @@ export const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
         updateLayouts,
         updateChartData,
         addChart,
-        removeChart
+        removeChart,
       }}
     >
       {children}
     </LayoutContext.Provider>
   );
-};
-
-const generateDefaultLayout = () => {
-  return [
-    { i: 'chart-1', x: 0, y: 0, w: 6, h: 3, minW: 3, minH: 2 },
-    { i: 'chart-2', x: 6, y: 0, w: 6, h: 3, minW: 3, minH: 2 },
-    { i: 'chart-3', x: 0, y: 3, w: 4, h: 3, minW: 3, minH: 2 },
-    { i: 'chart-4', x: 4, y: 3, w: 8, h: 3, minW: 3, minH: 2 }
-  ];
 };

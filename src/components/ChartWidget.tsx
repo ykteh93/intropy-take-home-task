@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { MoreHorizontal, Maximize2, MessageSquare, X } from 'lucide-react';
+import { MoreHorizontal, MessageSquare, X } from 'lucide-react';
 import { useLayout } from '../context/LayoutContext';
 import { useMockAI } from '../hooks/useMockAI';
 import ChartTypeSelector from './ChartTypeSelector';
@@ -16,7 +16,9 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showAIInput, setShowAIInput] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
-  const [chartType, setChartType] = useState(chartData[id]?.chartType || 'line');
+  const [chartType, setChartType] = useState(
+    chartData[id]?.chartType || 'line'
+  );
 
   const data = chartData[id] || {
     title: 'Untitled Chart',
@@ -25,60 +27,63 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
       chart: {
         type: 'line',
         style: {
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-        }
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        },
       },
       title: {
-        text: 'Untitled Chart'
+        text: 'Untitled Chart',
       },
       credits: {
-        enabled: false
+        enabled: false,
       },
       xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       },
       yAxis: {
         title: {
-          text: 'Values'
-        }
+          text: 'Values',
+        },
       },
-      series: [{
-        name: 'Series 1',
-        data: [29, 71, 106, 129, 144, 176]
-      }]
-    }
+      series: [
+        {
+          name: 'Series 1',
+          data: [29, 71, 106, 129, 144, 176],
+        },
+      ],
+    },
   };
 
   const handleAISubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!aiPrompt.trim()) return;
-    
+
     const newChartOptions = await generateChartFromPrompt(aiPrompt);
     updateChartData(id, {
       ...data,
-      title: newChartOptions.title.text,
-      options: newChartOptions
+      title: newChartOptions.title?.text,
+      options: newChartOptions,
     });
-    
+
     setAiPrompt('');
     setShowAIInput(false);
   };
 
   const handleChartTypeChange = (type: string) => {
     setChartType(type);
-    
+
     const updatedOptions = {
       ...data.options,
       chart: {
         ...data.options.chart,
-        type
-      }
+        type,
+      },
     };
-    
+
     updateChartData(id, {
       ...data,
       chartType: type,
-      options: updatedOptions
+      options: updatedOptions,
     });
   };
 
@@ -88,7 +93,9 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
   return (
     <div className="flex flex-col h-full">
       <div className="chart-drag-handle flex items-center justify-between p-3 border-b border-gray-100">
-        <h3 className="font-medium text-gray-800 text-sm truncate flex-1">{data.title}</h3>
+        <h3 className="font-medium text-gray-800 text-sm truncate flex-1">
+          {data.title}
+        </h3>
         <div className="flex items-center gap-2 relative">
           <button
             onClick={toggleAIInput}
@@ -103,10 +110,13 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
           >
             <MoreHorizontal size={16} />
           </button>
-          
+
           {showMenu && (
             <div className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-md border border-gray-200 p-1 z-10 min-w-40">
-              <ChartTypeSelector currentType={chartType} onSelect={handleChartTypeChange} />
+              <ChartTypeSelector
+                currentType={chartType}
+                onSelect={handleChartTypeChange}
+              />
               <button
                 onClick={() => {
                   setShowMenu(false);
@@ -121,12 +131,14 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
           )}
         </div>
       </div>
-      
+
       <div className="flex-1 relative overflow-hidden">
         {showAIInput && (
           <div className="absolute inset-0 bg-white z-10 flex flex-col p-4">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-gray-800">Ask AI to generate a chart</h4>
+              <h4 className="font-medium text-gray-800">
+                Ask AI to generate a chart
+              </h4>
               <button
                 onClick={toggleAIInput}
                 className="text-gray-500 hover:text-gray-700"
@@ -146,7 +158,9 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
                 type="submit"
                 disabled={isLoading || !aiPrompt.trim()}
                 className={`mt-3 p-2 rounded-md text-white font-medium text-sm ${
-                  isLoading || !aiPrompt.trim() ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                  isLoading || !aiPrompt.trim()
+                    ? 'bg-blue-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
                 }`}
               >
                 {isLoading ? 'Generating...' : 'Generate Chart'}
@@ -154,7 +168,7 @@ const ChartWidget: React.FC<ChartWidgetProps> = ({ id }) => {
             </form>
           </div>
         )}
-        
+
         <HighchartsReact
           highcharts={Highcharts}
           options={data.options}

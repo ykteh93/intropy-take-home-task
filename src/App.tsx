@@ -1,4 +1,3 @@
-import React from 'react';
 import Dashboard from './components/Dashboard';
 import { LayoutProvider } from './context/LayoutContext';
 import Header from './components/Header';
@@ -15,5 +14,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
