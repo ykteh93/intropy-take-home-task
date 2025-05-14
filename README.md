@@ -24,8 +24,6 @@ Many of our customers:
 
 This exercise simulates the kind of challenges we face: turning messy or disconnected ideas into helpful, actionable interfaces for real world impact.
 
----
-
 ## Your Task
 
 You can start from the existing code or rebuild however you like — up to you. Your goal is to **elevate this prototype** and make **choices that reflect what matters** for the end users.
@@ -51,8 +49,6 @@ Here are some directions you might explore:
  
 - Don’t feel limited to just graph outputs. We’re also very interested in how you might present **report-style summaries or suggested actions**, especially if they help non-technical users understand what to do next.
   
----
-
 ## Getting Started
 
 ```bash
